@@ -1,5 +1,6 @@
 ﻿using CoreApp102.Core.Models;
 using CoreApp102.Data.Configuration;
+using CoreApp102.Data.Seed;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,10 @@ namespace CoreApp102.Data
         {
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+
+            modelBuilder.ApplyConfiguration(new ProductSeed(new int[] { 1, 2 }));
+            modelBuilder.ApplyConfiguration(new CategorySeed(new int[] { 1, 2 }));
         }
+        //seed verilerini aldik
     }
 }

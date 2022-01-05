@@ -2,11 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace CoreApp102.Api.UnitOfWork
+namespace CoreApp102.Core.UnitOfWork
 {
-    public interface IUnifOfWork
+    public interface IUnitOfWork
     {
         //readonly
         IProductRepository product { get; }

@@ -1,7 +1,15 @@
+using CoreApp102.Core.Repository;
+using CoreApp102.Core.Services;
+using CoreApp102.Core.UnitOfWork;
+using CoreApp102.Data;
+using CoreApp102.Data.Repository;
+using CoreApp102.Data.UnitOfWork;
+using CoreApp102.Service.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,6 +34,26 @@ namespace CoreApp102.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped(typeof(IServices<>), typeof(Service.Services.Service<>));
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IProductService, ProductService>();
+
+            //api sadece serviceslerle ugrasacak o yuzden repositorye gerek yok
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            //DI nin temel karsiligi burasi 
+            //lifecycle
+            //abstract/concrete
+
+            services.AddDbContext<AppDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration["ConnectionStrings:SqlConStr"].ToString(), o =>
+                 {
+                     o.MigrationsAssembly("CoreApp102.Data");
+                 });
+            });
+
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

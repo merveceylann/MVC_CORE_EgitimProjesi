@@ -15,7 +15,7 @@ namespace CoreApp102.Core.Repository
 
         Task<IEnumerable<T>> GetAllAsync();
 
-        Task<IEnumerable<T>> Find(Expression<Func<T,bool>> predicate);
+        Task<IEnumerable<T>> Where(Expression<Func<T,bool>> predicate);
 
         //db.Product.FirstOrDefault(s=>s.Id==id);
 
@@ -30,6 +30,6 @@ namespace CoreApp102.Core.Repository
 
         void Remove(T entity);
 
-        void RemoveRange(T entity); //****ONEMLI
+        void RemoveRange(IEnumerable<T> entities);
     }
 }
