@@ -17,5 +17,10 @@ namespace CoreApp102.Core.UnitOfWork
 
         Task CommitAsync();
         void Commit();
+
+
+        //en son onayı verir commit 
+        //iki tane olması sebebi de update ve delete metodu voidi kullanacak
+        //diger metodlar async olanı kullanacak
     }
 }

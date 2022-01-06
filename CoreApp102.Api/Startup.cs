@@ -34,8 +34,9 @@ namespace CoreApp102.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(Startup));
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            services.AddScoped(typeof(IServices<>), typeof(Service.Services.Service<>));
+            services.AddScoped(typeof(IServices<>), typeof(CoreApp102.Service.Services.Service<>)); //hata olabilir 
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
 
@@ -55,7 +56,7 @@ namespace CoreApp102.Api
             });
 
 
-            services.AddControllers();
+            services.AddControllers(); //apilerin gorsel arayuzu yok oyuzden sadece controllerla calisicaz.
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CoreApp102.Api", Version = "v1" });

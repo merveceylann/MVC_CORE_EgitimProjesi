@@ -21,6 +21,8 @@ namespace CoreApp102.Core.Services
 
         Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities);
 
+        //update ve delete async degil cunku sql tarafı bunu kabul etmiyo
+
         T Update(T entity);
 
         void Remove(T entity);

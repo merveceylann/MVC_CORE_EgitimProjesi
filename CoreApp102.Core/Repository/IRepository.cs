@@ -10,6 +10,7 @@ namespace CoreApp102.Core.Repository
     public interface IRepository<T> where T : class
     {
         //sadece metodun ismini yazdik. yarim metod
+        //async programming
 
         Task<T> GetByIdAsync(int id);
 

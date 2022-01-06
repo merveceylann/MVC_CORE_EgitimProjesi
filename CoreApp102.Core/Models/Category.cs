@@ -12,6 +12,7 @@ namespace CoreApp102.Core.Models
         public Category()
         {
             Products = new Collection<Product>();
+            //nesneyi newleybilirim icollectionu newleyemem 
         }
 
         public int Id { get; set; }
