@@ -20,7 +20,6 @@ namespace CoreApp102.Data.Configuration
             builder.Property(s => s.Price).IsRequired().HasColumnType("decimal(18,2)");
             builder.Property(s => s.InnerBarcode).HasMaxLength(50);
             builder.ToTable("tblProducts");
-
         }
     }
 }

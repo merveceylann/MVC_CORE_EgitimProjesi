@@ -1,3 +1,5 @@
+using CoreApp102.Api.DTOs;
+using CoreApp102.Api.Filters;
 using CoreApp102.Core.Repository;
 using CoreApp102.Core.Services;
 using CoreApp102.Core.UnitOfWork;
@@ -6,7 +8,9 @@ using CoreApp102.Data.Repository;
 using CoreApp102.Data.UnitOfWork;
 using CoreApp102.Service.Services;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +40,9 @@ namespace CoreApp102.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper(typeof(Startup));
+
+            services.AddScoped<ProductNotFoundFilter>();
+
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped(typeof(IServices<>), typeof(CoreApp102.Service.Services.Service<>)); //hata olabilir 
             services.AddScoped<ICategoryService, CategoryService>();
@@ -55,11 +63,18 @@ namespace CoreApp102.Api
                  });
             });
 
-
-            services.AddControllers(); //apilerin gorsel arayuzu yok oyuzden sadece controllerla calisicaz.
+            //apilerin gorsel arayuzu yok oyuzden sadece controllerla calisicaz.
+            services.AddControllers(o =>
+            {
+                o.Filters.Add(new ValidationFilter());
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CoreApp102.Api", Version = "v1" });
+            });
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
             });
         }
 
@@ -72,7 +87,27 @@ namespace CoreApp102.Api
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CoreApp102.Api v1"));
             }
-
+            app.UseExceptionHandler(config =>
+            {
+                config.Run(async context =>
+                {
+                    context.Response.StatusCode = 500;
+                    context.Response.ContentType = "application/json";
+                    var error = context.Features.Get<IExceptionHandlerFeature>();
+                    if (error != null)
+                    {
+                        var ex = error.Error;
+                        if (ex != null)
+                        {
+                            ErrosDto errosDto = new ErrosDto();
+                            errosDto.Status = 500;
+                            errosDto.Errors.Add(ex.Message);
+                            await context.Response.WriteAsync(JsonConvert.SerializeObject(errosDto));
+                        }
+                    }
+                });
+            });
+            
             app.UseHttpsRedirection();
 
             app.UseRouting();
