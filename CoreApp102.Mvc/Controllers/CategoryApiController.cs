@@ -13,7 +13,7 @@ namespace CoreApp102.Mvc.Controllers
 {
     public class CategoryApiController : Controller
     {
-        private readonly ICategoryService _categoryService;
+        //private readonly ICategoryService _categoryService;
         private readonly CategoryApiService _categoryApiService;
         private readonly IMapper _mapper;
 
@@ -37,26 +37,26 @@ namespace CoreApp102.Mvc.Controllers
         public async Task<IActionResult> Create(CategoryDto categoryDto)
         {
             //await _categoryService.AddAsync(_mapper.Map<Category>(categoryDto));
+            await _categoryApiService.AddAsync(categoryDto);
             return RedirectToAction("Index");
         }
         public async Task<IActionResult> Update(int id)
         {
-            //var category = 1;//await _categoryService.GetByIdAsync(id);
-            //return View(_mapper.Map<CategoryDto>(category));
-            return View();
+            var category = await _categoryApiService.GetByIdAsync(id);
+            return View(_mapper.Map<CategoryDto>(category));
         }
 
         [HttpPost]
-        public IActionResult Update(CategoryDto categoryDto)
+        public async Task<IActionResult> Update(CategoryDto categoryDto)
         {
-          //  _categoryService.Update(_mapper.Map<Category>(categoryDto));
+            await _categoryApiService.Update(categoryDto);
             return RedirectToAction("Index");
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-           // var category = _categoryService.GetByIdAsync(id).Result;
-          //  _categoryService.Remove(category);
+            //var category = _categoryService.GetByIdAsync(id).Result;
+            await _categoryApiService.Remove(id);
             return RedirectToAction("Index");
         }
     }
