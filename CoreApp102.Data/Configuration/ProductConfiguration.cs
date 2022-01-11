@@ -13,6 +13,7 @@ namespace CoreApp102.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<Product> builder)
         {
+            //fluent api
             builder.HasKey(s => s.Id);
             builder.Property(s => s.Id).UseIdentityColumn();
             builder.Property(s => s.Name).IsRequired().HasMaxLength(200);

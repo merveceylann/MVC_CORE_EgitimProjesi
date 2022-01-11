@@ -69,7 +69,6 @@ namespace CoreApp102.Data.Repository
             //girilen degerin stateini aliyorum
             _db.Entry(entity).State = EntityState.Modified;
             return entity;
-                        
         }
     }
 }

@@ -1,4 +1,5 @@
 using CoreApp102.Api.DTOs;
+using CoreApp102.Api.Extensions;
 using CoreApp102.Api.Filters;
 using CoreApp102.Core.Repository;
 using CoreApp102.Core.Services;
@@ -47,7 +48,7 @@ namespace CoreApp102.Api
             services.AddScoped(typeof(IServices<>), typeof(CoreApp102.Service.Services.Service<>)); //hata olabilir 
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
-
+            //NEDEN TYPEOF?
             //api sadece serviceslerle ugrasacak o yuzden repositorye gerek yok
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -87,27 +88,9 @@ namespace CoreApp102.Api
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CoreApp102.Api v1"));
             }
-            app.UseExceptionHandler(config =>
-            {
-                config.Run(async context =>
-                {
-                    context.Response.StatusCode = 500;
-                    context.Response.ContentType = "application/json";
-                    var error = context.Features.Get<IExceptionHandlerFeature>();
-                    if (error != null)
-                    {
-                        var ex = error.Error;
-                        if (ex != null)
-                        {
-                            ErrosDto errosDto = new ErrosDto();
-                            errosDto.Status = 500;
-                            errosDto.Errors.Add(ex.Message);
-                            await context.Response.WriteAsync(JsonConvert.SerializeObject(errosDto));
-                        }
-                    }
-                });
-            });
-            
+
+            app.UseCustomException();
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
